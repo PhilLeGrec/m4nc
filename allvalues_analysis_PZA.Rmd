@@ -1,0 +1,123 @@
+---
+title: "DataAnalysisEDM"
+author: "Philip Zakhariadis-Awad"
+date: "24/05/2024"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Analysis of data from influencers' experiment by Eric Guerci & Wenxin Xiong
+
+Here are the variables present in the dataset:
+
+```{r}
+setwd("C:/Users/user/Desktop/Dati")
+library(nnet)
+library(RColorBrewer)
+library(tidyr)
+library(dplyr)
+library(tidyverse)
+library(reshape2)
+dati = read.csv(file="allvalues.csv", header=TRUE, sep=",", dec=".")
+names(dati)
+```
+
+*Valence and arousal per video (influencers' task):*
+
+```{r}
+par(mfrow=c(1,3))
+hist(dati$INFL_valence_A_socks, main="Socks", xlab="Valence", col=brewer.pal(n = 7, name = "PiYG"))
+hist(dati$INFL_valence_A_outfit, main="Outfit", xlab="Valence", col=brewer.pal(n = 8, name = "PiYG"))
+hist(dati$INFL_valence_A_coffee, main="Coffee", xlab="Valence", col=brewer.pal(n = 8, name = "PiYG"))
+par(mfrow=c(1,3))
+hist(dati$INFL_valence_B_moto, main="Moto", xlab="Valence", col=brewer.pal(n = 8, name = "PiYG"))
+hist(dati$INFL_valence_B_bond, main="Bond", xlab="Valence", col=brewer.pal(n = 8, name = "PiYG"))
+hist(dati$INFL_valence_B_car, main="Car", xlab="Valence", col=brewer.pal(n = 8, name = "PiYG"))
+par(mfrow=c(1,3))
+hist(dati$INFL_valence_C_balcony, main="Balcony", xlab="Valence", col=brewer.pal(n = 8, name = "PiYG"))
+hist(dati$INFL_valence_C_parkour, main="Parkour", xlab="Valence", col=brewer.pal(n = 8, name = "PiYG"))
+hist(dati$INFL_valence_C_rooftop, main="Rooftop", xlab="Valence", col=brewer.pal(n = 8, name = "PiYG"))
+par(mfrow=c(1,3))
+hist(dati$INFL_arousal_A_socks, main="Socks", xlab="Arousal", col=brewer.pal(n = 9, name = "PuRd"))
+hist(dati$INFL_arousal_A_outfit, main="Outfit", xlab="Arousal", col=brewer.pal(n = 9, name = "PuRd"))
+hist(dati$INFL_arousal_A_coffee, main="Coffee", xlab="Arousal", col=brewer.pal(n = 6, name = "PuRd"))
+par(mfrow=c(1,3))
+hist(dati$INFL_arousal_B_moto, main="Moto", xlab="Arousal", col=brewer.pal(n = 9, name = "PuRd"))
+hist(dati$INFL_arousal_B_bond, main="Bond", xlab="Arousal", col=brewer.pal(n = 9, name = "PuRd"))
+hist(dati$INFL_arousal_B_car, main="Car", xlab="Arousal", col=brewer.pal(n = 9, name = "PuRd"))
+par(mfrow=c(1,3))
+hist(dati$INFL_arousal_C_balcony, main="Balcony", xlab="Arousal", col=brewer.pal(n = 7, name = "PuRd"))
+hist(dati$INFL_arousal_C_parkour, main="Parkour", xlab="Arousal", col=brewer.pal(n = 8, name = "PuRd"))
+hist(dati$INFL_arousal_C_rooftop, main="Rooftop", xlab="Arousal", col=brewer.pal(n = 6, name = "PuRd"))
+```
+
+*Distribution of preference of videos in terms of order of appearance (1 is most prefered, 3 is least):*
+
+Rows show order of appearance, columns show video cluster
+
+```{r}
+par(mfrow=c(1,3))
+hist(dati$INFL_first_A_posOrder, main="Video A1", xlab="Preference", col=c("green", "yellow", "red"))
+hist(dati$INFL_second_A_posOrder, main="Video A2", xlab="Preference", col=c("green", "yellow", "red"))
+hist(dati$INFL_third_A_posOrder, main="Video A3", xlab="Preference", col=c("green", "yellow", "red"))
+par(mfrow=c(1,3))
+hist(dati$INFL_first_B_posOrder, main="Video B1", xlab="Preference", col=c("green", "yellow", "red"))
+hist(dati$INFL_second_B_posOrder, main="Video B2", xlab="Preference", col=c("green", "yellow", "red"))
+hist(dati$INFL_third_B_posOrder, main="Video B3", xlab="Preference", col=c("green", "yellow", "red"))
+par(mfrow=c(1,3))
+hist(dati$INFL_first_C_posOrder, main="Video C1", xlab="Preference", col=c("green", "yellow", "red"))
+hist(dati$INFL_second_C_posOrder, main="Video C2", xlab="Preference", col=c("green", "yellow", "red"))
+hist(dati$INFL_third_C_posOrder, main="Video C3", xlab="Preference", col=c("green", "yellow", "red"))
+```
+
+*Distribution of preference of videos in terms of content:*
+
+
+```{r}
+par(mfrow=c(1,3))
+plot(table(dati$INFL_first_A_name), main="First choice A", ylab="", col=c("green", "orange", "red"))
+plot(table(dati$INFL_second_A_name), main="Second choice A", ylab="", col=c("green", "orange", "red"))
+plot(table(dati$INFL_third_A_name), main="Third choice A", ylab="", col=c("green", "orange", "red"))
+par(mfrow=c(1,3))
+plot(table(dati$INFL_first_B_name), main="First choice B", ylab="", col=c("green", "orange", "red"))
+plot(table(dati$INFL_second_B_name), main="Second choice B", ylab="", col=c("green", "orange", "red"))
+plot(table(dati$INFL_third_B_name), main="Third choice B", ylab="", col=c("green", "orange", "red"))
+par(mfrow=c(1,3))
+plot(table(dati$INFL_first_C_name), main="First choice C", ylab="", col=c("green", "orange", "red"))
+plot(table(dati$INFL_second_C_name), main="Second choice C", ylab="", col=c("green", "orange", "red"))
+plot(table(dati$INFL_third_C_name), main="Third choice C", ylab="", col=c("green", "orange", "red"))
+```
+
+Preference prediction:
+```{r}
+af<-mean(dati$INFL_score_pred_females_A)
+bf<-mean(dati$INFL_score_pred_females_B)
+cf<-mean(dati$INFL_score_pred_females_C)
+fr<-c(af,bf,cf)
+am<-mean(dati$INFL_score_pred_males_A)
+bm<-mean(dati$INFL_score_pred_males_B)
+cm<-mean(dati$INFL_score_pred_males_C)
+mr<-c(am,bm,cm)
+data.frame(fr,mr) # table with means of prediction accuracies
+#height of green/purple column shows relative accuracy rate per video block
+par(mfrow=c(1,3))
+hist(dati$INFL_score_pred_females_A, main="Predictions block A (fem.)", col=brewer.pal(n = 9, name = "Greens"))
+hist(dati$INFL_score_pred_females_B, main="Predictions block B (fem.)", col=brewer.pal(n = 9, name = "Greens"))
+hist(dati$INFL_score_pred_females_C, main="Predictions block C (fem.)", col=brewer.pal(n = 9, name = "Greens"))
+par(mfrow=c(1,3))
+hist(dati$INFL_score_pred_males_A, main="Predictions block A (male)", col=brewer.pal(n = 9, name = "Purples"))
+hist(dati$INFL_score_pred_males_B, main="Predictions block B (male)", col=brewer.pal(n = 9, name = "Purples"))
+hist(dati$INFL_score_pred_males_C, main="Predictions block C (male)", col=brewer.pal(n = 9, name = "Purples"))
+```
+
+MASC scores:
+```{r}
+hist(dati$MASC_answer_score, main="MASC score", freq=F, col=brewer.pal(n = 9, name = "Blues"))
+hist(dati$MASC_noToM, main="No ToM answers", col=brewer.pal(n = 9, name = "YlOrRd"), freq=F)
+hist(dati$MASC_diminishingToM, main="Diminishing ToM answers",col=brewer.pal(n = 9, name = "YlOrRd"), freq=F)
+hist(dati$MASC_exceedingToM, main="Exceeding ToM answers", col=brewer.pal(n = 6, name = "YlOrRd"), freq=F)
+```
+
